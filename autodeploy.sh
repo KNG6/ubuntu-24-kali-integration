@@ -161,10 +161,42 @@ systemctl --user start xhost.service
 # Create a script "/usr/local/bin/kali" to run commands in the Kali container
 echo '#!/bin/bash
 
+show_help() {
+    cat <<EOF
+Usage: kali [COMMAND] [ARGS...]
+
+Wrapper for running commands inside the "kali" Docker container.
+
+Options:
+  -h, --help        Show this help message and exit
+
+Behavior:
+  If no arguments are provided:
+    Launch an interactive Bash shell inside the container.
+
+  If arguments are provided:
+    Execute the given command inside the container with the current
+    host working directory mounted as /mnt/host.
+
+Examples:
+  kali                        # Start an interactive shell in the container
+  kali ls -la                 # Run 'ls -la' inside the container
+  kali python3 script.py      # Run a Python script inside the container
+EOF
+}
+
 if [ $# -gt 0 ]; then
-	docker exec -it -w "/mnt/host$(pwd)" kali $@
+    case "$1" in
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            docker exec -it -w "/mnt/host$(pwd)" kali "$@"
+            ;;
+    esac
 else
-	docker exec -it -w "/mnt/host$(pwd)" kali bash
+    docker exec -it -w "/mnt/host$(pwd)" kali bash
 fi' | sudo tee -a /usr/local/bin/kali
 
 # Make the script executable
