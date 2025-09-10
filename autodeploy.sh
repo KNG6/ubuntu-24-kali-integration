@@ -117,10 +117,12 @@ sudo docker pull kalilinux/kali-rolling
 # Run Kali container in detached mode:
 # - Mount entire host filesystem to /mnt/host
 # - Forward X11 socket for GUI apps
+# - Use host networking (container shares the host IP and ports)
 # - Auto-restart unless stopped manually
 sudo docker run -d --name kali \
   -v /:/mnt/host \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
+  --network host
   -e DISPLAY=$DISPLAY \
   --restart unless-stopped \
   kalilinux/kali-rolling tail -f /dev/null
@@ -210,4 +212,4 @@ sudo chmod +x /usr/local/bin/kali
 # - Update and upgrade packages
 # - Install top 10 Kali tools
 # - Install X11 apps for GUI
-sudo docker exec -i kali bash -c "apt update && apt upgrade -y && apt install kali-tools-top10 -y && apt install x11-apps -y"
+sudo docker exec -i kali bash -c "apt update && apt upgrade -y && apt install kali-tools-top10 x11-apps -y"
