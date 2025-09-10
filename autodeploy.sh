@@ -122,7 +122,7 @@ sudo docker pull kalilinux/kali-rolling
 sudo docker run -d --name kali \
   -v /:/mnt/host \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  --network host
+  --network host \
   -e DISPLAY=$DISPLAY \
   --restart unless-stopped \
   kalilinux/kali-rolling tail -f /dev/null
